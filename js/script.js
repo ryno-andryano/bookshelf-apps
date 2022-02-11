@@ -1,5 +1,31 @@
 let bukuBelumDibaca = [];
 let bukuSudahDibaca = [];
+const storageBelumDibaca = "Buku-Belum-Dibaca";
+const storageSudahDibaca = "Buku-Sudah-Dibaca";
+
+if (typeof Storage !== "undefined") {
+  let dataBelumDibaca = JSON.parse(localStorage.getItem(storageBelumDibaca));
+  let dataSudahDibaca = JSON.parse(localStorage.getItem(storageSudahDibaca));
+  if (dataBelumDibaca !== null) {
+    bukuBelumDibaca = dataBelumDibaca;
+    updateBelumDibaca();
+  }
+  if (dataSudahDibaca !== null) {
+    bukuSudahDibaca = dataSudahDibaca;
+    updateSudahDibaca();
+  }
+} else {
+  alert("Browser tidak mendukung local storage.");
+}
+
+function saveData() {
+  const stringBelumDibaca = JSON.stringify(bukuBelumDibaca);
+  localStorage.setItem(storageBelumDibaca, stringBelumDibaca);
+  const stringSudahDibaca = JSON.stringify(bukuSudahDibaca);
+  localStorage.setItem(storageSudahDibaca, stringSudahDibaca);
+  updateBelumDibaca();
+  updateSudahDibaca();
+}
 
 function tambahBuku() {
   let bukuBaru = {};
@@ -13,15 +39,35 @@ function tambahBuku() {
   } else {
     bukuBelumDibaca.push(bukuBaru);
   }
-  updateBelumDibaca();
-  updateSudahDibaca();
+  saveData();
 }
 
 const formBukuBaru = document.querySelector("#inputBook");
 formBukuBaru.addEventListener("submit", (event) => {
   event.preventDefault();
   tambahBuku();
+  formBukuBaru.reset();
 });
+
+function hapusBukuBelum(index) {
+  bukuBelumDibaca.splice(index, 1);
+  saveData();
+}
+
+function hapusBukuSudah(index) {
+  bukuSudahDibaca.splice(index, 1);
+  saveData();
+}
+
+function pindahBelumKeSudah(index) {
+  bukuSudahDibaca.push(bukuBelumDibaca.splice(index, 1)[0]);
+  saveData();
+}
+
+function pindahSudahKeBelum(index) {
+  bukuBelumDibaca.push(bukuSudahDibaca.splice(index, 1)[0]);
+  saveData();
+}
 
 function updateBelumDibaca() {
   let compileBelumDibaca = "";
@@ -61,26 +107,4 @@ function updateSudahDibaca() {
   }
   const htmlSudahDibaca = document.querySelector("#completeBookshelfList");
   htmlSudahDibaca.innerHTML = compileSudahDibaca;
-}
-
-function hapusBukuBelum(index) {
-  bukuBelumDibaca.splice(index, 1);
-  updateBelumDibaca();
-}
-
-function hapusBukuSudah(index) {
-  bukuSudahDibaca.splice(index, 1);
-  updateSudahDibaca();
-}
-
-function pindahBelumKeSudah(index) {
-  bukuSudahDibaca.push(bukuBelumDibaca.splice(index, 1)[0]);
-  updateBelumDibaca();
-  updateSudahDibaca();
-}
-
-function pindahSudahKeBelum(index) {
-  bukuBelumDibaca.push(bukuSudahDibaca.splice(index, 1)[0]);
-  updateSudahDibaca();
-  updateBelumDibaca();
 }
