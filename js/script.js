@@ -32,6 +32,7 @@ formBukuBaru.addEventListener("submit", (event) => {
   event.preventDefault();
   tambahBuku();
   formBukuBaru.reset();
+  modalTambah.style.display = "none";
 });
 
 function tambahBuku() {
@@ -50,13 +51,57 @@ function tambahBuku() {
 }
 
 function hapusBukuBelum(index) {
-  bukuBelumDibaca.splice(index, 1);
-  saveData();
+  var modalDelete = document.querySelector("#delConfirm");
+  var closeDelete = document.querySelector(".close-del");
+  var yesBtn = document.querySelector("#delYes");
+  var noBtn = document.querySelector("#delNo");
+
+  modalDelete.style.display = "block";
+
+  closeDelete.onclick = function () {
+    modalDelete.style.display = "none";
+  };
+  window.onclick = function (event) {
+    if (event.target == modalDelete) {
+      modalDelete.style.display = "none";
+    }
+  };
+  noBtn.onclick = function () {
+    modalDelete.style.display = "none";
+  };
+
+  yesBtn.onclick = function () {
+    bukuBelumDibaca.splice(index, 1);
+    saveData();
+    modalDelete.style.display = "none";
+  };
 }
 
 function hapusBukuSudah(index) {
-  bukuSudahDibaca.splice(index, 1);
-  saveData();
+  var modalDelete = document.querySelector("#delConfirm");
+  var closeDelete = document.querySelector(".close-del");
+  var yesBtn = document.querySelector("#delYes");
+  var noBtn = document.querySelector("#delNo");
+
+  modalDelete.style.display = "block";
+
+  closeDelete.onclick = function () {
+    modalDelete.style.display = "none";
+  };
+  window.onclick = function (event) {
+    if (event.target == modalDelete) {
+      modalDelete.style.display = "none";
+    }
+  };
+  noBtn.onclick = function () {
+    modalDelete.style.display = "none";
+  };
+
+  yesBtn.onclick = function () {
+    bukuSudahDibaca.splice(index, 1);
+    saveData();
+    modalDelete.style.display = "none";
+  };
 }
 
 function pindahBelumKeSudah(index) {
@@ -74,19 +119,23 @@ function updateBelumDibaca() {
   for (let i = 0; i < bukuBelumDibaca.length; i++) {
     compileBelumDibaca += `
       <article class="book_item">
-        <h3>${bukuBelumDibaca[i].title}</h3>
-        <p>Penulis: ${bukuBelumDibaca[i].author}</p>
-        <p>Tahun: ${bukuBelumDibaca[i].year}</p>
-
+        <div class="info">
+          <h3>${bukuBelumDibaca[i].title}</h3>
+          <p>Penulis: ${bukuBelumDibaca[i].author}</p>
+          <p>Tahun: ${bukuBelumDibaca[i].year}</p>
+        </div>
         <div class="action">
-          <button class="green" onclick="pindahBelumKeSudah(${i})">Selesai dibaca</button>
-          <button class="red" onclick="hapusBukuBelum(${i})">Hapus buku</button>
+          <button class="swap" onclick="pindahBelumKeSudah(${i})">Selesai Dibaca</button>
+          <button class="delete" onclick="hapusBukuBelum(${i})">Hapus Buku</button>
         </div>
       </article>
       `;
   }
   const htmlBelumDibaca = document.querySelector("#incompleteBookshelfList");
   htmlBelumDibaca.innerHTML = compileBelumDibaca;
+  if (htmlBelumDibaca.innerHTML == "") {
+    htmlBelumDibaca.innerHTML = `<div class="listEmpty">Daftar buku yang belum selesai dibaca masih kosong.</div>`;
+  }
 }
 
 function updateSudahDibaca() {
@@ -94,19 +143,23 @@ function updateSudahDibaca() {
   for (let i = 0; i < bukuSudahDibaca.length; i++) {
     compileSudahDibaca += `
       <article class="book_item">
-        <h3>${bukuSudahDibaca[i].title}</h3>
-        <p>Penulis: ${bukuSudahDibaca[i].author}</p>
-        <p>Tahun: ${bukuSudahDibaca[i].year}</p>
-
+        <div class="info">
+          <h3>${bukuSudahDibaca[i].title}</h3>
+          <p>Penulis: ${bukuSudahDibaca[i].author}</p>
+          <p>Tahun: ${bukuSudahDibaca[i].year}</p>
+        </div>
         <div class="action">
-          <button class="green" onclick="pindahSudahKeBelum(${i})">Belum selesai dibaca</button>
-          <button class="red" onclick="hapusBukuSudah(${i})">Hapus buku</button>
+          <button class="swap" onclick="pindahSudahKeBelum(${i})">Belum Selesai</button>
+          <button class="delete" onclick="hapusBukuSudah(${i})">Hapus Buku</button>
         </div>
       </article>
       `;
   }
   const htmlSudahDibaca = document.querySelector("#completeBookshelfList");
   htmlSudahDibaca.innerHTML = compileSudahDibaca;
+  if (htmlSudahDibaca.innerHTML == "") {
+    htmlSudahDibaca.innerHTML = `<div class="listEmpty">Daftar buku yang sudah selesai dibaca masih kosong.</div>`;
+  }
 }
 
 function searchBuku() {
@@ -122,3 +175,21 @@ function searchBuku() {
     }
   }
 }
+
+var modalTambah = document.querySelector("#inputBookSection");
+var btnTambah = document.querySelector("#tambahBukuBtn");
+var closeTambah = document.querySelector(".close");
+
+btnTambah.onclick = function () {
+  modalTambah.style.display = "block";
+};
+
+closeTambah.onclick = function () {
+  modalTambah.style.display = "none";
+};
+
+window.onclick = function (event) {
+  if (event.target == modalTambah) {
+    modalTambah.style.display = "none";
+  }
+};
