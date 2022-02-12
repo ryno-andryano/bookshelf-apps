@@ -1,7 +1,7 @@
 let bukuBelumDibaca = [];
 let bukuSudahDibaca = [];
-const storageBelumDibaca = "Buku-Belum-Dibaca";
-const storageSudahDibaca = "Buku-Sudah-Dibaca";
+const storageBelumDibaca = "Buku_Belum_Dibaca";
+const storageSudahDibaca = "Buku_Sudah_Dibaca";
 
 if (typeof Storage !== "undefined") {
   let dataBelumDibaca = JSON.parse(localStorage.getItem(storageBelumDibaca));
@@ -27,6 +27,13 @@ function saveData() {
   updateSudahDibaca();
 }
 
+const formBukuBaru = document.querySelector("#inputBook");
+formBukuBaru.addEventListener("submit", (event) => {
+  event.preventDefault();
+  tambahBuku();
+  formBukuBaru.reset();
+});
+
 function tambahBuku() {
   let bukuBaru = {};
   bukuBaru.id = Date.now();
@@ -41,13 +48,6 @@ function tambahBuku() {
   }
   saveData();
 }
-
-const formBukuBaru = document.querySelector("#inputBook");
-formBukuBaru.addEventListener("submit", (event) => {
-  event.preventDefault();
-  tambahBuku();
-  formBukuBaru.reset();
-});
 
 function hapusBukuBelum(index) {
   bukuBelumDibaca.splice(index, 1);
@@ -107,4 +107,18 @@ function updateSudahDibaca() {
   }
   const htmlSudahDibaca = document.querySelector("#completeBookshelfList");
   htmlSudahDibaca.innerHTML = compileSudahDibaca;
+}
+
+function searchBuku() {
+  var input = document.querySelector("#searchBookTitle").value.toUpperCase();
+  var itemBuku = document.querySelectorAll(".book_item");
+
+  for (let i = 0; i < itemBuku.length; i++) {
+    var kontenBuku = itemBuku[i].innerText.toUpperCase();
+    if (kontenBuku.indexOf(input) > -1) {
+      itemBuku[i].style.display = "";
+    } else {
+      itemBuku[i].style.display = "none";
+    }
+  }
 }
