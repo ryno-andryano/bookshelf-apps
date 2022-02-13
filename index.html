@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bookshelf Apps</title>
+    <link rel="icon" href="img/logo.png" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,85 +20,90 @@
   </head>
 
   <body>
-    <section id="inputBookSection" class="modal input_section">
-      <div class="modal-content card">
-        <span class="close">&times;</span>
-        <h2>Masukkan Buku Baru</h2>
-        <form id="inputBook">
-          <div class="input col-100">
-            <label for="inputBookTitle">Judul</label>
-            <input id="inputBookTitle" type="text" required />
-          </div>
-          <div class="input col-75">
-            <label for="inputBookAuthor">Penulis</label>
-            <input id="inputBookAuthor" type="text" required />
-          </div>
-          <div class="input col-20">
-            <label for="inputBookYear">Tahun</label>
-            <input
-              id="inputBookYear"
-              type="number"
-              required
-              min="1900"
-              max="2022"
-            />
-          </div>
-          <div class="input_inline">
-            <input id="inputBookIsComplete" type="checkbox" />
-            <label for="inputBookIsComplete">Selesai dibaca</label>
-          </div>
-          <button id="bookSubmit" type="submit">Masukkan Buku ke Rak</button>
-        </form>
-      </div>
-    </section>
-
-    <section id="delConfirm" class="modal">
-      <div class="modal-content card">
-        <span class="close-del">&times;</span>
-        <h2>Apakah anda yakin ingin menghapus buku ini?</h2>
-        <div class="delete-action">
-          <button id="delYes" class="delete">Ya</button>
-          <button id="delNo" class="swap">Tidak</button>
-        </div>
-      </div>
-    </section>
-
     <div class="main-container">
       <header></header>
       <main>
-        <section class="search_section card">
-          <form id="searchBook">
+        <section id="search-section" class="card">
+          <form id="search-form">
             <input
-              id="searchBookTitle"
+              id="search-keyword"
               type="text"
               onkeyup="searchBuku()"
               placeholder="Filter judul buku, nama pengarang, atau tahun terbit"
             />
           </form>
-          <button id="tambahBukuBtn">Tambah Buku</button>
+          <button id="tambah-buku-btn" onclick="modalBukuBaru()">
+            Tambah Buku
+          </button>
         </section>
 
-        <section class="book_shelf card">
+        <section class="book-shelf card">
           <h2>Belum Selesai Dibaca</h2>
 
-          <div id="incompleteBookshelfList" class="book_list">
-            <div class="listEmpty">
+          <div id="belum-dibaca-list" class="book-list">
+            <div class="empty-list">
               Daftar buku yang belum selesai dibaca masih kosong.
             </div>
           </div>
         </section>
 
-        <section class="book_shelf card">
+        <section class="book-shelf card">
           <h2>Selesai Dibaca</h2>
 
-          <div id="completeBookshelfList" class="book_list">
-            <div class="listEmpty">
+          <div id="sudah-dibaca-list" class="book-list">
+            <div class="empty-list">
               Daftar buku yang sudah selesai dibaca masih kosong.
             </div>
           </div>
         </section>
       </main>
     </div>
+
+    <section id="tambah-buku-section" class="modal">
+      <div class="modal-content card">
+        <span class="close">&times;</span>
+        <h2>Masukkan Buku Baru</h2>
+        <form id="tambah-buku-form">
+          <div class="input col-100">
+            <label for="tambah-buku-judul">Judul</label>
+            <input id="tambah-buku-judul" type="text" required />
+          </div>
+          <div class="input col-78">
+            <label for="tambah-buku-penulis">Penulis</label>
+            <input id="tambah-buku-penulis" type="text" required />
+          </div>
+          <div class="input col-20">
+            <label for="tambah-buku-tahun">Tahun</label>
+            <input
+              id="tambah-buku-tahun"
+              type="number"
+              required
+              min="1000"
+              max="2022"
+            />
+          </div>
+          <div class="input-inline">
+            <input id="tambah-buku-selesai" type="checkbox" />
+            <label for="tambah-buku-selesai">Selesai dibaca</label>
+          </div>
+          <button id="tambah-buku-submit" type="submit">
+            Masukkan Buku ke Rak
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <section id="del-confirm" class="modal">
+      <div class="modal-content card">
+        <span class="close-del">&times;</span>
+        <h2>Apakah anda yakin ingin menghapus buku ini?</h2>
+        <div class="delete-action">
+          <button id="del-yes" class="delete">Ya</button>
+          <button id="del-no" class="swap">Tidak</button>
+        </div>
+      </div>
+    </section>
+
     <script src="js/script.js"></script>
   </body>
 </html>

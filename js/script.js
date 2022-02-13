@@ -27,7 +27,32 @@ function saveData() {
   updateSudahDibaca();
 }
 
-const formBukuBaru = document.querySelector("#inputBook");
+function searchBuku() {
+  var input = document.querySelector("#search-keyword").value.toUpperCase();
+  var infoBuku = document.querySelectorAll(".info");
+  var itemBuku = document.querySelectorAll(".book-item");
+
+  for (let i = 0; i < itemBuku.length; i++) {
+    var kontenBuku = infoBuku[i].innerText.toUpperCase();
+    if (kontenBuku.indexOf(input) > -1) {
+      itemBuku[i].style.display = "";
+    } else {
+      itemBuku[i].style.display = "none";
+    }
+  }
+}
+
+var modalTambah = document.querySelector("#tambah-buku-section");
+var closeTambah = document.querySelector(".close");
+function modalBukuBaru() {
+  modalTambah.style.display = "block";
+
+  closeTambah.onclick = () => {
+    modalTambah.style.display = "none";
+  };
+}
+
+const formBukuBaru = document.querySelector("#tambah-buku-form");
 formBukuBaru.addEventListener("submit", (event) => {
   event.preventDefault();
   tambahBuku();
@@ -38,10 +63,10 @@ formBukuBaru.addEventListener("submit", (event) => {
 function tambahBuku() {
   let bukuBaru = {};
   bukuBaru.id = Date.now();
-  bukuBaru.title = document.querySelector("#inputBookTitle").value;
-  bukuBaru.author = document.querySelector("#inputBookAuthor").value;
-  bukuBaru.year = document.querySelector("#inputBookYear").value;
-  bukuBaru.isComplete = document.querySelector("#inputBookIsComplete").checked;
+  bukuBaru.title = document.querySelector("#tambah-buku-judul").value;
+  bukuBaru.author = document.querySelector("#tambah-buku-penulis").value;
+  bukuBaru.year = document.querySelector("#tambah-buku-tahun").value;
+  bukuBaru.isComplete = document.querySelector("#tambah-buku-selesai").checked;
   if (bukuBaru.isComplete) {
     bukuSudahDibaca.push(bukuBaru);
   } else {
@@ -50,75 +75,55 @@ function tambahBuku() {
   saveData();
 }
 
-function hapusBukuBelum(index) {
-  var modalDelete = document.querySelector("#delConfirm");
-  var closeDelete = document.querySelector(".close-del");
-  var yesBtn = document.querySelector("#delYes");
-  var noBtn = document.querySelector("#delNo");
-
-  modalDelete.style.display = "block";
-
-  closeDelete.onclick = function () {
-    modalDelete.style.display = "none";
-  };
-  window.onclick = function (event) {
-    if (event.target == modalDelete) {
-      modalDelete.style.display = "none";
-    }
-  };
-  noBtn.onclick = function () {
-    modalDelete.style.display = "none";
-  };
-
-  yesBtn.onclick = function () {
-    bukuBelumDibaca.splice(index, 1);
-    saveData();
-    modalDelete.style.display = "none";
-  };
-}
-
-function hapusBukuSudah(index) {
-  var modalDelete = document.querySelector("#delConfirm");
-  var closeDelete = document.querySelector(".close-del");
-  var yesBtn = document.querySelector("#delYes");
-  var noBtn = document.querySelector("#delNo");
-
-  modalDelete.style.display = "block";
-
-  closeDelete.onclick = function () {
-    modalDelete.style.display = "none";
-  };
-  window.onclick = function (event) {
-    if (event.target == modalDelete) {
-      modalDelete.style.display = "none";
-    }
-  };
-  noBtn.onclick = function () {
-    modalDelete.style.display = "none";
-  };
-
-  yesBtn.onclick = function () {
-    bukuSudahDibaca.splice(index, 1);
-    saveData();
-    modalDelete.style.display = "none";
-  };
-}
-
 function pindahBelumKeSudah(index) {
-  bukuSudahDibaca.push(bukuBelumDibaca.splice(index, 1)[0]);
+  var bukuPindah = bukuBelumDibaca.splice(index, 1)[0];
+  bukuPindah.isComplete = true;
+  bukuSudahDibaca.push(bukuPindah);
   saveData();
 }
 
 function pindahSudahKeBelum(index) {
-  bukuBelumDibaca.push(bukuSudahDibaca.splice(index, 1)[0]);
+  var bukuPindah = bukuSudahDibaca.splice(index, 1)[0];
+  bukuPindah.isComplete = false;
+  bukuBelumDibaca.push(bukuPindah);
   saveData();
+}
+
+var modalDelete = document.querySelector("#del-confirm");
+var closeDelete = document.querySelector(".close-del");
+var yesBtn = document.querySelector("#del-yes");
+var noBtn = document.querySelector("#del-no");
+function hapusBuku(index, isDibaca) {
+  modalDelete.style.display = "block";
+
+  closeDelete.onclick = () => {
+    modalDelete.style.display = "none";
+  };
+  window.onclick = (event) => {
+    if (event.target == modalDelete) {
+      modalDelete.style.display = "none";
+    }
+  };
+  noBtn.onclick = () => {
+    modalDelete.style.display = "none";
+  };
+
+  yesBtn.onclick = () => {
+    if (isDibaca) {
+      bukuSudahDibaca.splice(index, 1);
+    } else {
+      bukuBelumDibaca.splice(index, 1);
+    }
+    saveData();
+    modalDelete.style.display = "none";
+  };
 }
 
 function updateBelumDibaca() {
   let compileBelumDibaca = "";
   for (let i = 0; i < bukuBelumDibaca.length; i++) {
     compileBelumDibaca += `
-      <article class="book_item">
+      <article class="book-item">
         <div class="info">
           <h3>${bukuBelumDibaca[i].title}</h3>
           <p>Penulis: ${bukuBelumDibaca[i].author}</p>
@@ -126,15 +131,15 @@ function updateBelumDibaca() {
         </div>
         <div class="action">
           <button class="swap" onclick="pindahBelumKeSudah(${i})">Selesai Dibaca</button>
-          <button class="delete" onclick="hapusBukuBelum(${i})">Hapus Buku</button>
+          <button class="delete" onclick="hapusBuku(${i}, false)">Hapus Buku</button>
         </div>
       </article>
       `;
   }
-  const htmlBelumDibaca = document.querySelector("#incompleteBookshelfList");
+  const htmlBelumDibaca = document.querySelector("#belum-dibaca-list");
   htmlBelumDibaca.innerHTML = compileBelumDibaca;
   if (htmlBelumDibaca.innerHTML == "") {
-    htmlBelumDibaca.innerHTML = `<div class="listEmpty">Daftar buku yang belum selesai dibaca masih kosong.</div>`;
+    htmlBelumDibaca.innerHTML = `<div class="empty-list">Daftar buku yang belum selesai dibaca masih kosong.</div>`;
   }
 }
 
@@ -142,7 +147,7 @@ function updateSudahDibaca() {
   let compileSudahDibaca = "";
   for (let i = 0; i < bukuSudahDibaca.length; i++) {
     compileSudahDibaca += `
-      <article class="book_item">
+      <article class="book-item">
         <div class="info">
           <h3>${bukuSudahDibaca[i].title}</h3>
           <p>Penulis: ${bukuSudahDibaca[i].author}</p>
@@ -150,46 +155,14 @@ function updateSudahDibaca() {
         </div>
         <div class="action">
           <button class="swap" onclick="pindahSudahKeBelum(${i})">Belum Selesai</button>
-          <button class="delete" onclick="hapusBukuSudah(${i})">Hapus Buku</button>
+          <button class="delete" onclick="hapusBuku(${i}, true)">Hapus Buku</button>
         </div>
       </article>
       `;
   }
-  const htmlSudahDibaca = document.querySelector("#completeBookshelfList");
+  const htmlSudahDibaca = document.querySelector("#sudah-dibaca-list");
   htmlSudahDibaca.innerHTML = compileSudahDibaca;
   if (htmlSudahDibaca.innerHTML == "") {
-    htmlSudahDibaca.innerHTML = `<div class="listEmpty">Daftar buku yang sudah selesai dibaca masih kosong.</div>`;
+    htmlSudahDibaca.innerHTML = `<div class="empty-list">Daftar buku yang sudah selesai dibaca masih kosong.</div>`;
   }
 }
-
-function searchBuku() {
-  var input = document.querySelector("#searchBookTitle").value.toUpperCase();
-  var itemBuku = document.querySelectorAll(".book_item");
-
-  for (let i = 0; i < itemBuku.length; i++) {
-    var kontenBuku = itemBuku[i].innerText.toUpperCase();
-    if (kontenBuku.indexOf(input) > -1) {
-      itemBuku[i].style.display = "";
-    } else {
-      itemBuku[i].style.display = "none";
-    }
-  }
-}
-
-var modalTambah = document.querySelector("#inputBookSection");
-var btnTambah = document.querySelector("#tambahBukuBtn");
-var closeTambah = document.querySelector(".close");
-
-btnTambah.onclick = function () {
-  modalTambah.style.display = "block";
-};
-
-closeTambah.onclick = function () {
-  modalTambah.style.display = "none";
-};
-
-window.onclick = function (event) {
-  if (event.target == modalTambah) {
-    modalTambah.style.display = "none";
-  }
-};
